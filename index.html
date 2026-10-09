@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WhatsApp Sipariş Sistemi · Kerem Can Arslan</title>
+<meta name="description" content="Müşterileriniz WhatsApp'tan yazar, menünüz açılır, sipariş özetiyle telefonunuza düşer. Restoran, pastane, ev yemekleri ve dükkânlar için resmî WhatsApp altyapısıyla sipariş sistemi.">
+<meta property="og:title" content="WhatsApp Sipariş Sistemi">
+<meta property="og:description" content="Müşteriniz WhatsApp'tan yazar, menünüz açılır, sipariş size düşer. Komisyonsuz, resmî WhatsApp altyapısı.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0d3b2e">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230d3b2e'/%3E%3Cpath d='M9 11.5A3.5 3.5 0 0 1 12.5 8h7A3.5 3.5 0 0 1 23 11.5v5a3.5 3.5 0 0 1-3.5 3.5H15l-4.5 4v-4.2A3.5 3.5 0 0 1 9 16.5z' fill='%2325d366'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #f6f6f1; --yuzey: #ffffff; --yazi: #12201a; --soluk: #56635c; --cizgi: #e3e5de;
+    --marka: #0d3b2e; --marka-2: #145c45; --yesil: #25d366; --yesil-koyu: #0b3d1f; --vurgu-zemin: #e9f5ee;
+    --golge: 0 1px 2px rgba(18,32,26,.05), 0 8px 28px rgba(18,32,26,.07);
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--yazi);
+    font: 16px/1.6 "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  a { color: inherit; }
+  .kap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+  h1, h2, h3 { line-height: 1.18; letter-spacing: -.012em; margin: 0; }
+  h2 { font-size: clamp(26px, 3.4vw, 36px); font-weight: 800; }
+  .bolum { padding: 88px 0; }
+  .bolum-ust { max-width: 680px; margin-bottom: 40px; }
+  .bolum-ust p { color: var(--soluk); font-size: 17px; margin: 12px 0 0; }
+  .etiket { display: inline-block; font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--marka-2); margin-bottom: 10px; }
+
+  /* üst menü */
+  .nav { position: sticky; top: 0; z-index: 20; background: rgba(246,246,241,.86); backdrop-filter: saturate(1.4) blur(12px);
+    -webkit-backdrop-filter: saturate(1.4) blur(12px); border-bottom: 1px solid transparent; transition: border-color .2s; }
+  .nav.golgeli { border-bottom-color: var(--cizgi); }
+  .nav .kap { display: flex; align-items: center; justify-content: space-between; height: 66px; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; text-decoration: none; letter-spacing: -.01em; }
+  .logo-ikon { width: 32px; height: 32px; border-radius: 9px; background: var(--marka); display: grid; place-items: center; flex: none; }
+  .logo-ikon svg { width: 20px; height: 20px; }
+  .nav-linkler { display: flex; gap: 26px; font-size: 15px; font-weight: 600; color: var(--soluk); }
+  .nav-linkler a { text-decoration: none; }
+  .nav-linkler a:hover { color: var(--yazi); }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; text-decoration: none; font-weight: 700;
+    border-radius: 12px; padding: 13px 20px; font-size: 15.5px; border: 0; cursor: pointer; transition: transform .12s, box-shadow .12s, background .12s; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-ana { background: var(--marka); color: #fff; box-shadow: 0 6px 18px rgba(13,59,46,.22); }
+  .btn-ana:hover { background: var(--marka-2); }
+  .btn-yesil { background: var(--yesil); color: var(--yesil-koyu); box-shadow: 0 6px 18px rgba(37,211,102,.28); }
+  .btn-ikinci { background: var(--yuzey); color: var(--yazi); border: 1px solid var(--cizgi); }
+  .btn svg { width: 19px; height: 19px; flex: none; }
+  .btn-kucuk { padding: 9px 15px; font-size: 14.5px; border-radius: 10px; }
+
+  /* giriş */
+  .giris { padding: 56px 0 72px; }
+  .giris .kap { display: grid; grid-template-columns: 1.08fr .92fr; gap: 56px; align-items: center; }
+  .ust-not { display: inline-flex; align-items: center; gap: 8px; background: var(--vurgu-zemin); color: var(--marka-2);
+    font-weight: 650; font-size: 14px; padding: 6px 12px; border-radius: 999px; margin-bottom: 20px; }
+  .ust-not i { width: 7px; height: 7px; border-radius: 50%; background: var(--yesil); display: inline-block; }
+  .giris h1 { font-size: clamp(36px, 5vw, 56px); font-weight: 800; letter-spacing: -.02em; }
+  .giris h1 em { font-style: normal; color: var(--marka-2); }
+  .giris p.lead { font-size: 18.5px; color: var(--soluk); margin: 20px 0 30px; max-width: 560px; }
+  .butonlar { display: flex; flex-wrap: wrap; gap: 12px; }
+  .guven { list-style: none; padding: 0; margin: 30px 0 0; display: grid; gap: 10px; color: var(--soluk); font-size: 15px; font-weight: 550; }
+  .guven li { display: flex; gap: 10px; align-items: center; }
+  .tik { width: 22px; height: 22px; border-radius: 50%; background: var(--vurgu-zemin); color: var(--marka-2); display: grid; place-items: center; flex: none; }
+  .tik svg { width: 13px; height: 13px; }
+
+  /* telefon */
+  .telefon-alan { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .telefon { width: 340px; aspect-ratio: 375 / 760; border-radius: 46px; background: #0f1512; padding: 12px; position: relative;
+    box-shadow: 0 30px 60px -20px rgba(13,59,46,.45), 0 0 0 1px rgba(0,0,0,.06), inset 0 0 0 2px #2a312d; }
+  .telefon::before { content: ""; position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 92px; height: 24px;
+    border-radius: 14px; background: #0f1512; z-index: 2; }
+  .ekran { width: 100%; height: 100%; border-radius: 35px; overflow: hidden; background: #f5f4f1; position: relative; }
+  .ekran iframe { border: 0; width: 375px; height: 760px; transform-origin: 0 0; position: absolute; top: 40px; left: 0; }
+  .ekran-ust { height: 40px; display: flex; justify-content: space-between; align-items: center; padding: 6px 26px 0; font-size: 13px; font-weight: 700; color: #1c1917; }
+  .telefon-not { font-size: 13.5px; color: var(--soluk); text-align: center; max-width: 330px; }
+  .telefon-not b { color: var(--yazi); }
+
+  /* adımlar */
+  .adimlar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .adim { background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: var(--radius); padding: 24px; box-shadow: var(--golge);
+    display: flex; flex-direction: column; }
+  .adim-no { width: 34px; height: 34px; border-radius: 10px; background: var(--marka); color: #fff; font-weight: 800; display: grid; place-items: center; }
+  .adim h3 { font-size: 19px; margin: 16px 0 6px; }
+  .adim p { color: var(--soluk); margin: 0 0 18px; font-size: 15px; }
+  .sahne { flex: 1; background: #efeae2; border-radius: 14px; padding: 14px; display: grid; gap: 8px; min-height: 196px; align-content: start; }
+  .b { max-width: 88%; padding: 8px 11px; border-radius: 10px; font-size: 13.5px; line-height: 1.45; box-shadow: 0 1px 1px rgba(0,0,0,.08); white-space: pre-line; }
+  .b-sag { justify-self: end; background: #d9fdd3; border-top-right-radius: 3px; }
+  .b-sol { justify-self: start; background: #fff; border-top-left-radius: 3px; }
+  .b small { display: block; text-align: right; color: #667781; font-size: 11px; margin-top: 2px; }
+  .b-dugme { justify-self: start; width: 88%; background: #fff; border-radius: 10px; text-align: center; color: #027eb5; font-weight: 650;
+    font-size: 13.5px; padding: 8px; box-shadow: 0 1px 1px rgba(0,0,0,.08); margin-top: -4px; }
+  .mini-menu { background: #fff; border-radius: 12px; padding: 4px 12px; font-size: 13.5px; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  .mini-menu > div { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 8px 0; border-top: 1px solid #eee; }
+  .mini-menu > div:first-child { border-top: 0; }
+  .mini-menu span { color: #6b6560; font-size: 12.5px; display: block; }
+  .mini-menu b { white-space: nowrap; }
+  .mini-sepet { background: #c2410c; color: #fff; border-radius: 10px; padding: 9px 12px; font-weight: 700; font-size: 13.5px;
+    display: flex; justify-content: space-between; }
+
+  /* özellikler */
+  .ozellikler { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .ozellik { background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: var(--radius); padding: 24px; }
+  .ozellik-ikon { width: 44px; height: 44px; border-radius: 12px; background: var(--vurgu-zemin); color: var(--marka-2); display: grid; place-items: center; }
+  .ozellik-ikon svg { width: 23px; height: 23px; }
+  .ozellik h3 { font-size: 17.5px; margin: 16px 0 6px; }
+  .ozellik p { margin: 0; color: var(--soluk); font-size: 15px; }
+
+  /* karşılaştırma */
+  .koyu { background: var(--marka); color: #eaf3ee; }
+  .koyu .etiket { color: var(--yesil); }
+  .koyu .bolum-ust p { color: #b8ccc2; }
+  .karsilastir { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .kutu { border-radius: var(--radius); padding: 28px; }
+  .kutu-gri { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); }
+  .kutu-acik { background: #fff; color: var(--yazi); }
+  .kutu h3 { font-size: 19px; margin-bottom: 14px; }
+  .kutu ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0; }
+  .kutu li { display: flex; justify-content: space-between; gap: 16px; padding: 13px 0; border-top: 1px solid rgba(255,255,255,.12); font-size: 15px; }
+  .kutu-acik li { border-top-color: var(--cizgi); }
+  .kutu li:first-child { border-top: 0; }
+  .kutu li span:first-child { opacity: .75; }
+  .kutu li b { text-align: right; font-weight: 700; }
+  .kutu-acik li b { color: var(--marka-2); }
+  .karsilastir-not { margin: 26px 0 0; font-size: 16px; color: #d3e3da; max-width: 760px; }
+
+  /* fiyat */
+  .paketler { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; }
+  .paket { background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: var(--radius); padding: 28px; display: flex; flex-direction: column; position: relative; }
+  .paket.one { border: 2px solid var(--marka-2); box-shadow: var(--golge); }
+  .paket-rozet { position: absolute; top: -13px; left: 28px; background: var(--marka-2); color: #fff; font-size: 12.5px; font-weight: 700;
+    padding: 4px 10px; border-radius: 999px; }
+  .paket h3 { font-size: 19px; }
+  .paket .fiyat { font-size: 38px; font-weight: 800; letter-spacing: -.02em; margin: 10px 0 2px; }
+  .paket .fiyat small { font-size: 16px; font-weight: 600; color: var(--soluk); }
+  .paket .sure { color: var(--soluk); font-size: 14.5px; margin-bottom: 18px; }
+  .paket ul { list-style: none; padding: 0; margin: 0 0 24px; display: grid; gap: 10px; font-size: 15px; }
+  .paket li { display: flex; gap: 10px; align-items: flex-start; }
+  .paket li .tik { margin-top: 1px; }
+  .paket .btn { margin-top: auto; }
+  .ucret-not { margin-top: 26px; background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: 14px; padding: 18px 20px; color: var(--soluk); font-size: 15px; }
+  .ucret-not b { color: var(--yazi); }
+
+  /* sss */
+  .sss { display: grid; gap: 12px; max-width: 820px; }
+  details { background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: 14px; padding: 0 20px; }
+  summary { cursor: pointer; list-style: none; padding: 18px 0; font-weight: 700; font-size: 16.5px; display: flex; justify-content: space-between; gap: 16px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; font-size: 22px; line-height: 1; color: var(--marka-2); transition: transform .2s; }
+  details[open] summary::after { transform: rotate(45deg); }
+  details p { margin: 0 0 18px; color: var(--soluk); font-size: 15.5px; }
+
+  /* iletişim */
+  .iletisim-kart { background: var(--marka); color: #eaf3ee; border-radius: 24px; padding: 48px; display: grid; grid-template-columns: 1.3fr .7fr; gap: 40px; align-items: center; }
+  .iletisim-kart h2 { color: #fff; }
+  .iletisim-kart p { color: #c4d6cc; font-size: 17px; margin: 14px 0 0; }
+  .iletisim-butonlar { display: grid; gap: 12px; }
+  .iletisim-butonlar .btn-ikinci { background: transparent; color: #fff; border-color: rgba(255,255,255,.3); }
+  .kim { display: flex; gap: 14px; align-items: center; margin-top: 26px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,.14); }
+  .kim-harf { width: 46px; height: 46px; border-radius: 50%; background: var(--yesil); color: var(--yesil-koyu); display: grid; place-items: center; font-weight: 800; flex: none; }
+  .kim b { color: #fff; display: block; }
+  .kim span { color: #b8ccc2; font-size: 14.5px; }
+
+  footer { padding: 40px 0 56px; color: var(--soluk); font-size: 14px; }
+  footer .kap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  @media (max-width: 960px) {
+    .giris .kap { grid-template-columns: 1fr; gap: 44px; }
+    .adimlar, .ozellikler, .paketler { grid-template-columns: 1fr 1fr; }
+    .iletisim-kart { grid-template-columns: 1fr; padding: 36px 28px; }
+    .nav-linkler { display: none; }
+  }
+  @media (max-width: 680px) {
+    .bolum { padding: 64px 0; }
+    .giris { padding-top: 32px; }
+    .adimlar, .ozellikler, .paketler, .karsilastir { grid-template-columns: 1fr; }
+    .paket.one { order: -1; }
+    .telefon { width: min(320px, calc(100vw - 56px)); border-radius: 40px; }
+    .ekran { border-radius: 30px; }
+    .btn { width: 100%; }
+    .nav .btn { width: auto; }
+    .kutu { padding: 22px; }
+  }
+  @media (max-width: 480px) {
+    .nav .btn { display: none; }
+    .ust-not { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav" id="nav">
+  <div class="kap">
+    <a href="#" class="logo" aria-label="Ana sayfa"><span class="logo-ikon"><svg viewBox="0 0 24 24"><path d="M4 7.5A3.5 3.5 0 0 1 7.5 4h9A3.5 3.5 0 0 1 20 7.5v6a3.5 3.5 0 0 1-3.5 3.5H11l-5 4v-4.3A3.5 3.5 0 0 1 4 13.5z" fill="#25d366"/></svg></span>WhatsApp Sipariş Sistemi</a>
+    <div class="nav-linkler"><a href="#nasil">Nasıl çalışır</a><a href="#ozellikler">Neler var</a><a href="#fiyat">Fiyat</a><a href="#sss">Sorular</a></div>
+    <a href="#iletisim" class="btn btn-ana btn-kucuk">Ücretsiz ön izleme</a>
+  </div>
+</nav>
+
+<header class="giris">
+  <div class="kap">
+    <div>
+      <span class="ust-not"><i></i>Restoran, pastane, ev yemekleri ve dükkânlar için</span>
+      <h1>Siparişler WhatsApp'tan gelsin, <em>gerisini sistem toplasın.</em></h1>
+      <p class="lead">Müşteriniz işletmenizin WhatsApp hattına yazar, menünüz telefonunda açılır. Ürünü seçer, adresini ve ödeme şeklini girer. Sipariş özetiyle birlikte hem müşteriye hem size gelir. Siz yalnızca hazırlarsınız.</p>
+      <div class="butonlar">
+        <a href="#iletisim" class="btn btn-ana">Menünüzle ücretsiz ön izleme</a>
+        <a href="demo/" class="btn btn-ikinci" target="_blank" rel="noopener">Demoyu tam ekran açın</a>
+      </div>
+      <ul class="guven">
+        <li><span class="tik"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span>Meta'nın resmî WhatsApp altyapısıyla kurulur</li>
+        <li><span class="tik"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span>Sipariş başına komisyon yok, tek seferlik kurulum ücreti</li>
+        <li><span class="tik"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span>Kurulumu ben yaparım, teknik bilgi gerekmez</li>
+      </ul>
+    </div>
+    <div class="telefon-alan">
+      <div class="telefon"><div class="ekran" id="ekran"><div class="ekran-ust" aria-hidden="true"><span>20:14</span><span>5G</span></div><iframe src="demo/" title="Canlı demo menü" loading="lazy" id="demo-cerceve"></iframe></div></div>
+      <p class="telefon-not"><b>Bu menü çalışıyor.</b> Ürün seçip siparişi sonuna kadar verebilirsiniz; demo olduğu için sipariş kimseye gitmez.</p>
+    </div>
+  </div>
+</header>
+
+<section class="bolum" id="nasil" style="padding-top:32px">
+  <div class="kap">
+    <div class="bolum-ust">
+      <span class="etiket">Nasıl çalışır</span>
+      <h2>Müşteriniz için üç dokunuş, sizin için tek bildirim</h2>
+      <p>Uygulama indirmek, üye olmak ya da şifre almak yok. Müşteriniz zaten kullandığı WhatsApp'tan sipariş verir.</p>
+    </div>
+    <div class="adimlar">
+      <article class="adim">
+        <span class="adim-no">1</span>
+        <h3>Müşteri yazar</h3>
+        <p>Instagram'daki bağlantınıza dokunur ya da numaranıza "merhaba" yazar. Sistem anında cevap verir.</p>
+        <div class="sahne" aria-hidden="true">
+          <div class="b b-sag">Merhaba, menüyü görmek istiyorum<small>20:14</small></div>
+          <div class="b b-sol">Menümüzü açıp ürünleri seçin, sepetinizi onaylayın. Siparişinizin özeti buraya gelecek.<small>20:14</small></div>
+          <div class="b-dugme">Menüyü aç</div>
+        </div>
+      </article>
+      <article class="adim">
+        <span class="adim-no">2</span>
+        <h3>Menüden seçer</h3>
+        <p>Menünüz telefonunda açılır. Porsiyonu seçer, sepete ekler, adresini ve ödeme şeklini yazar.</p>
+        <div class="sahne" aria-hidden="true">
+          <div class="mini-menu">
+            <div><div>Klasik Burger<span>Patates ve ayranlı menü</span></div><b>380 TL</b></div>
+            <div><div>Soğan Halkası<span>8 adet, ranch sos ile</span></div><b>110 TL</b></div>
+            <div><div>Limonata<span>Ev yapımı, taze nane ile</span></div><b>70 TL</b></div>
+          </div>
+          <div class="mini-sepet"><span>Siparişi gönder</span><span>600 TL</span></div>
+        </div>
+      </article>
+      <article class="adim">
+        <span class="adim-no">3</span>
+        <h3>Sipariş size düşer</h3>
+        <p>Siparişin özeti telefonunuza bildirim olarak gelir, aynı anda listeye kaydedilir. Müşteriye de onay gider.</p>
+        <div class="sahne" aria-hidden="true">
+          <div class="b b-sol"><b>Yeni sipariş #1009201431</b>
+Müşteri: Ayşe K.
+1 x Klasik Burger (menü) — 380 TL
+1 x Soğan Halkası — 110 TL
+1 x Limonata — 70 TL
+Teslimat: 40 TL
+Toplam: 600 TL
+Adrese teslim · Kapıda kart<small>20:16</small></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="bolum" id="ozellikler" style="padding-top:24px">
+  <div class="kap">
+    <div class="bolum-ust">
+      <span class="etiket">Neler var</span>
+      <h2>Mesajlardan sipariş toplama derdi biter</h2>
+      <p>Her işletme farklı; sistem sizin menünüze, saatlerinize ve çalışma şeklinize göre kurulur.</p>
+    </div>
+    <div class="ozellikler">
+      <div class="ozellik"><span class="ozellik-ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span>
+        <h3>Seçenekli menü</h3><p>Porsiyon, gramaj, boy ya da "menü olsun mu" gibi seçimler. Biten ürün "tükendi" görünür ve seçilemez.</p></div>
+      <div class="ozellik"><span class="ozellik-ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+        <h3>Gece de cevap verir</h3><p>Çalışma saati, servis bölgesi, ödeme şekli gibi sık sorulan sorular, siz meşgulken de anında cevaplanır.</p></div>
+      <div class="ozellik"><span class="ozellik-ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
+        <h3>Sipariş bildirimi</h3><p>Her sipariş ürünleri, tutarı, adresi ve notuyla birlikte telefonunuza düşer. Mesajların arasında kaybolmaz.</p></div>
+      <div class="ozellik"><span class="ozellik-ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>
+        <h3>Excel'de sipariş listesi</h3><p>Tarih, müşteri, ürünler, tutar ve ödeme şekli tek listede. Gün sonu hesabı kolaylaşır, hiçbir sipariş kaybolmaz.</p></div>
+      <div class="ozellik"><span class="ozellik-ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h3"/></svg></span>
+        <h3>Ödeme seçenekleri</h3><p>Kapıda nakit ya da kart, yemek kartı, havale. Havale seçilirse IBAN'ınız sipariş özetiyle otomatik gider.</p></div>
+      <div class="ozellik"><span class="ozellik-ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></span>
+        <h3>Instagram bağlantısı</h3><p>Profilinize koyacağınız bağlantıyla takipçileriniz tek dokunuşla menünüze ulaşır. Gel al ve adrese teslim birlikte çalışır.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="bolum koyu">
+  <div class="kap">
+    <div class="bolum-ust">
+      <span class="etiket">Platformlarla birlikte</span>
+      <h2 style="color:#fff">Platformu bırakmanız gerekmiyor</h2>
+      <p>Paket servis platformları yeni müşteri getirir. Düzenli müşterileriniz ve takipçileriniz ise size komisyonsuz kanaldan sipariş verebilir.</p>
+    </div>
+    <div class="karsilastir">
+      <div class="kutu kutu-gri">
+        <h3>Paket servis platformu</h3>
+        <ul>
+          <li><span>Sipariş başına komisyon</span><b>Var</b></li>
+          <li><span>Müşteriyle iletişim</span><b>Platform üzerinden</b></li>
+          <li><span>Menü ve fiyat</span><b>Platform kurallarıyla</b></li>
+          <li><span>Yeni müşteri bulma</span><b>Güçlü</b></li>
+        </ul>
+      </div>
+      <div class="kutu kutu-acik">
+        <h3>Kendi WhatsApp siparişiniz</h3>
+        <ul>
+          <li><span>Sipariş başına komisyon</span><b>Yok</b></li>
+          <li><span>Müşteriyle iletişim</span><b>Doğrudan sizinle</b></li>
+          <li><span>Menü ve fiyat</span><b>Tamamen size göre</b></li>
+          <li><span>En uygun olduğu yer</span><b>Düzenli müşteri ve takipçiler</b></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bolum" id="fiyat">
+  <div class="kap">
+    <div class="bolum-ust">
+      <span class="etiket">Fiyat</span>
+      <h2>Tek seferlik kurulum ücreti</h2>
+      <p>Önce sizin menünüzle çalışan ön izlemeyi görürsünüz, beğenirseniz kurarız.</p>
+    </div>
+    <div class="paketler">
+      <div class="paket">
+        <h3>Otomatik cevap</h3>
+        <div class="fiyat">900 <small>TL</small></div>
+        <div class="sure">3 günde teslim</div>
+        <ul>
+          <li><span class="tik"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span>Resmî WhatsApp altyapısının kurulumu</li>
+          <li><span class="tik"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span>Karşılama mesajı ve butonlu menü</li>
+          <li><span class="tik"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span>Fiyatlar, saatler, konum ve sık sorulan sorular</li>
+        </ul>
+        <a href="#iletisim" class="btn btn-ikinci">Bilgi alın</a>
+      </div>
+      <div class="paket one">
+        <span class="paket-rozet">Önerilen</span>
+        <h3>Sipariş sistemi</h3>
+        <div class="fiyat">1.800 <small>TL</small></div>
+        <div class="sure">5 günde teslim</div>
+        <ul>
+          <li><span class="tik"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span>Otomatik cevap paketindeki her şey</li>
+          <li><span class="tik"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span>Seçenekli menüden sepetli sipariş</li>
+          <li><span class="tik"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span>Adres, ödeme şekli ve sipariş notu</li>
+          <li><span class="tik"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span>Size bildirim, müşteriye onay mesajı</li>
+          <li><span class="tik"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span>Excel'de açılan sipariş listesi</li>
+        </ul>
+        <a href="#iletisim" class="btn btn-ana">Ön izleme isteyin</a>
+      </div>
+      <div class="paket">
+        <h3>Kapsamlı</h3>
+        <div class="fiyat">3.500 <small>TL</small></div>
+        <div class="sure">7 günde teslim</div>
+        <ul>
+          <li><span class="tik"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span>Sipariş sistemindeki her şey</li>
+          <li><span class="tik"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span>Yapay zekâ ile serbest soru cevaplama</li>
+          <li><span class="tik"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span>Gerektiğinde sohbeti çalışanınıza devretme</li>
+          <li><span class="tik"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span>30 gün destek</li>
+        </ul>
+        <a href="#iletisim" class="btn btn-ikinci">Bilgi alın</a>
+      </div>
+    </div>
+    <p class="ucret-not"><b>Bana aylık ödeme yok.</b> Sistemin çalıştığı küçük sunucunun aylık gideri ve WhatsApp'ın kendi ücretleri işletmeye aittir; sunucu giderini kurulumdan önce yazılı olarak söylerim. Müşteri size yazdıktan sonraki 24 saat içinde verilen cevaplar Meta tarafından ücretlendirilmez. Online ödeme (iyzico ya da PayTR hesabınız varsa) ayrıca eklenebilir.</p>
+  </div>
+</section>
+
+<section class="bolum" id="sss" style="padding-top:24px">
+  <div class="kap">
+    <div class="bolum-ust">
+      <span class="etiket">Sorular</span>
+      <h2>Aklınıza gelebilecekler</h2>
+    </div>
+    <div class="sss">
+      <details><summary>Teknik bilgim yok, kullanabilir miyim?</summary>
+        <p>Evet. Kurulumu ben yaparım; siz yalnızca siparişleri görürsünüz. Menü, fiyat ya da saat değişikliklerini mesajla iletmeniz yeterli.</p></details>
+      <details><summary>Mevcut WhatsApp numaramı kullanabilir miyim?</summary>
+        <p>Çoğu durumda sistem için ayrı bir numara öneriyorum; müşterilerinizle kendi telefonunuzdan yazışmaya devam edersiniz. Numaranızın uygunluğuna ön izleme aşamasında birlikte bakarız.</p></details>
+      <details><summary>Numaram kapanır mı?</summary>
+        <p>Sistem Meta'nın resmî WhatsApp Business altyapısıyla kurulur. WhatsApp'ın izin vermediği gayriresmî programlar numaranın kapatılmasına yol açabilir; onları kullanmıyorum.</p></details>
+      <details><summary>Müşteri bir şey sormak isterse ne olur?</summary>
+        <p>Sık sorulan sorulara sistem cevap verir. Siz de aynı sohbetten müşteriye istediğiniz zaman yazabilirsiniz; Kapsamlı pakette sohbet gerektiğinde çalışanınıza devredilir.</p></details>
+      <details><summary>Online ödeme alabilir miyim?</summary>
+        <p>iyzico ya da PayTR gibi bir ödeme hesabınız varsa eklenebilir. Yoksa kapıda ödeme, yemek kartı ve havale seçenekleriyle çalışır; çoğu küçük işletme için bu yeterli oluyor.</p></details>
+      <details><summary>Kurulum ne kadar sürer?</summary>
+        <p>Pakete göre 3 ila 7 gün. Süre, Meta'nın numara ve işletme onayını tamamlamasından sonra başlar; bu aşamada adım adım yol gösteririm.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="bolum" id="iletisim" style="padding-top:24px">
+  <div class="kap">
+    <div class="iletisim-kart">
+      <div>
+        <h2>Menünüzü gönderin, sizin menünüzle çalışan ön izlemeyi göstereyim.</h2>
+        <p>Menünüzün fotoğrafı ya da ürün listeniz yeterli. Ön izleme ücretsizdir; beğenmezseniz hiçbir yükümlülüğünüz olmaz.</p>
+        <div class="kim"><span class="kim-harf">KA</span><div><b>Kerem Can Arslan</b><span>Bilgisayar mühendisi. Kurulumu, ayarları ve sonrasındaki desteği ben yapıyorum.</span></div></div>
+      </div>
+      <div class="iletisim-butonlar">
+        <a class="btn btn-yesil" id="wa-iletisim" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.5-.3z"/></svg>WhatsApp'tan yazın</a>
+        <a class="btn btn-ikinci" id="eposta-iletisim" href="#">E-posta gönderin</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="kap">
+    <span>© 2026 Kerem Can Arslan</span>
+    <span>WhatsApp, Meta Platforms, Inc.'in ticari markasıdır. Bu site Meta ile bağlantılı değildir.</span>
+  </div>
+</footer>
+
+<script>
+  const ILETISIM = {"wa": "", "eposta": ""};
+  const mesaj = encodeURIComponent("Merhaba, WhatsApp sipariş sistemi için ön izleme istiyorum. İşletmem: ");
+  const wa = document.getElementById("wa-iletisim"), ep = document.getElementById("eposta-iletisim");
+  if (ILETISIM.wa) wa.href = "https://wa.me/" + ILETISIM.wa + "?text=" + mesaj; else wa.hidden = true;
+  if (ILETISIM.eposta) ep.href = "mailto:" + ILETISIM.eposta + "?subject=" + encodeURIComponent("WhatsApp sipariş sistemi"); else ep.hidden = true;
+
+  const ekran = document.getElementById("ekran"), cerceve = document.getElementById("demo-cerceve");
+  const olcekle = () => { const s = ekran.clientWidth / 375; cerceve.style.transform = "scale(" + s + ")"; cerceve.style.height = ((ekran.clientHeight - 40) / s) + "px"; };
+  olcekle(); addEventListener("resize", olcekle);
+  const nav = document.getElementById("nav");
+  addEventListener("scroll", () => nav.classList.toggle("golgeli", scrollY > 8), { passive: true });
+</script>
+</body>
+</html>
