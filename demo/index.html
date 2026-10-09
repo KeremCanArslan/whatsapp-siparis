@@ -182,7 +182,7 @@ function baslat() {
   const birim = k => urunler[k.id].fiyat + (urunler[k.id].secenekler ? urunler[k.id].secenekler.liste[k.secenek].ek : 0);
   const araToplam = () => sepet.reduce((t, k) => t + k.adet * birim(k), 0);
   const adetToplam = () => sepet.reduce((t, k) => t + k.adet, 0);
-  const ucret = ara => durum.teslimat === "gelal" || ara >= T.ucretsiz_esik ? 0 : T.ucret;
+  const ucret = ara => durum.teslimat === "gelal" || !T.ucret || (T.ucretsiz_esik && ara >= T.ucretsiz_esik) ? 0 : T.ucret;
   const kaydet = () => { try { sessionStorage.setItem(ANAHTAR, JSON.stringify(sepet)); } catch (e) {} };
 
   function bildir(yazi) {
@@ -204,8 +204,8 @@ function baslat() {
       <p class="alt-bilgi">${esc(VERI.saatler)}</p>
       <div class="rozetler">
         <span class="rozet">Teslimat <b>${esc(T.sure)}</b></span>
-        <span class="rozet">En az sipariş <b>${tl(T.min_tutar)}</b></span>
-        <span class="rozet"><b>${tl(T.ucretsiz_esik)}</b> üzeri teslimat ücretsiz</span>
+        ${T.min_tutar ? `<span class="rozet">En az sipariş <b>${tl(T.min_tutar)}</b></span>` : ""}
+        <span class="rozet">${!T.ucret ? "Teslimat <b>ücretsiz</b>" : T.ucretsiz_esik ? `<b>${tl(T.ucretsiz_esik)}</b> üzeri teslimat ücretsiz` : `Teslimat ücreti <b>${tl(T.ucret)}</b>`}</span>
       </div>
     </header>
     <nav class="kat" aria-label="Kategoriler"><div class="kat-ic">
@@ -383,7 +383,7 @@ function baslat() {
         <div class="toplam-satir"><span>Ara toplam</span><span>${tl(ara)}</span></div>
         <div class="toplam-satir"><span>Teslimat</span><span>${uc ? tl(uc) : "Ücretsiz"}</span></div>
         <div class="toplam-satir buyuk"><span>Toplam</span><span>${tl(ara + uc)}</span></div>
-        ${durum.teslimat === "adres" && uc && ara < T.ucretsiz_esik && eksik <= 0
+        ${durum.teslimat === "adres" && uc && T.ucretsiz_esik && ara < T.ucretsiz_esik && eksik <= 0
           ? `<p class="not">${tl(T.ucretsiz_esik - ara)} daha ekleyin, teslimat ücretsiz olsun.</p>` : ""}`;
       let neden = "";
       if (!sepet.length) neden = "Sepetiniz boş.";
