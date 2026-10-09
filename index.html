@@ -149,7 +149,7 @@
   .ucret-not p + p, .ucret-not .gider + p { margin-top: 12px; }
   .gider { list-style: none; margin: 14px 0 0; padding: 0; }
   .gider li { display: flex; justify-content: space-between; gap: 6px 16px; flex-wrap: wrap; padding: 10px 0; border-top: 1px solid var(--cizgi); }
-  .gider li b { white-space: nowrap; }
+  .gider li b { min-width: 0; }
 
   /* sss */
   .sss { display: grid; gap: 12px; max-width: 820px; }
@@ -218,7 +218,7 @@
       </div>
       <ul class="guven">
         <li><span class="tik"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span>Meta'nın resmî WhatsApp altyapısıyla kurulur</li>
-        <li><span class="tik"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span>Sipariş başına komisyon yok, tek seferlik kurulum ücreti</li>
+        <li><span class="tik"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span>Sipariş başına komisyon yok, sabit yıllık ücret</li>
         <li><span class="tik"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span>Kurulumu ben yaparım, teknik bilgi gerekmez</li>
       </ul>
     </div>
@@ -337,7 +337,7 @@ Adrese teslim · Kapıda kart<small>20:16</small></div>
   <div class="kap">
     <div class="bolum-ust">
       <span class="etiket">Fiyat</span>
-      <h2>Tek seferlik kurulum ücreti</h2>
+      <h2>Kurulum ücreti ve yıllık bakım</h2>
       <p>Önce sizin menünüzle çalışan ön izlemeyi görürsünüz, beğenirseniz kurarız.</p>
     </div>
     <div class="paketler">
@@ -381,14 +381,14 @@ Adrese teslim · Kapıda kart<small>20:16</small></div>
       </div>
     </div>
     <div class="ucret-not">
-      <p><b>Bana aylık ödeme yok.</b> Sistemin aylık giderleri işletmenize aittir ve doğrudan sağlayıcılara ödenir. Ekim 2026 fiyatlarıyla tahmini tutarlar:</p>
+      <p><b>Sunucu ve bakım: yılda 1.500 TL</b> (ayda 125 TL'ye denk). Sistemin çalıştığı sunucuyu ben sağlarım; sunucu, güvenlik güncellemeleri, sistemin çalışır tutulması ve menü/fiyat değişiklikleri bu ücrete dahildir. Kurulumla birlikte ödenir, her yıl yenilenir.</p>
+      <p>WhatsApp'ın kendi ücretleri ise Meta tarafından, WhatsApp hesabınıza eklediğiniz karttan alınır. Ekim 2026 fiyatlarıyla:</p>
       <ul class="gider">
-        <li><span>Sunucu (Türkiye'de, küçük boy)</span><b>Ayda yaklaşık 400–550 TL</b></li>
         <li><span>Sistemin müşterilere verdiği cevaplar</span><b>Ayda ilk 1.000 mesaj ücretsiz, sonrası mesaj başına yaklaşık 0,05 TL</b></li>
         <li><span>Size gelen sipariş bildirimi</span><b>Bildirim başına yaklaşık 0,05 TL</b></li>
         <li><span>İsteğe bağlı: kampanya ve duyuru mesajı</span><b>Mesaj başına yaklaşık 0,55 TL</b></li>
       </ul>
-      <p>Örnek: ayda 500 sipariş alan bir işletmenin toplam gideri yaklaşık 470–620 TL olur. WhatsApp ücretleri Meta tarafından dolar üzerinden alınır, TL tutarlar güncel kurla yaklaşıktır. Kesin tutarı kurulumdan önce yazılı olarak bildiririm. Online ödeme (iyzico ya da PayTR hesabınız varsa) ayrıca eklenebilir; komisyonu ödeme kuruluşunun kendi tarifesine göredir.</p>
+      <p>Örnek: ayda 500 sipariş alan bir işletmenin WhatsApp gideri ayda yaklaşık 65 TL olur. Meta dolar üzerinden ücretlendirir, TL tutarlar güncel kurla yaklaşıktır. Online ödeme (iyzico ya da PayTR hesabınız varsa) ayrıca eklenebilir; komisyonu ödeme kuruluşunun kendi tarifesine göredir.</p>
     </div>
   </div>
 </section>
@@ -401,7 +401,9 @@ Adrese teslim · Kapıda kart<small>20:16</small></div>
     </div>
     <div class="sss">
       <details><summary>Teknik bilgim yok, kullanabilir miyim?</summary>
-        <p>Evet. Kurulumu ben yaparım; siz yalnızca siparişleri görürsünüz. Menü, fiyat ya da saat değişikliklerini mesajla iletmeniz yeterli.</p></details>
+        <p>Evet. Kurulumu ben yaparım, sistemin çalıştığı sunucu da bende; siz yalnızca siparişleri görürsünüz. Menü, fiyat ya da saat değişikliklerini mesajla iletmeniz yeterli.</p></details>
+      <details><summary>Yıllık ücreti yenilemezsem ne olur?</summary>
+        <p>Sistem dönem sonunda kapanır. Sipariş listeniz Excel dosyası olarak size teslim edilir, sunucudaki verileriniz silinir. Herhangi bir taahhüt ya da cayma bedeli yoktur.</p></details>
       <details><summary>Mevcut WhatsApp numaramı kullanabilir miyim?</summary>
         <p>Çoğu durumda sistem için ayrı bir numara öneriyorum; müşterilerinizle kendi telefonunuzdan yazışmaya devam edersiniz. Numaranızın uygunluğuna ön izleme aşamasında birlikte bakarız.</p></details>
       <details><summary>Numaram kapanır mı?</summary>
